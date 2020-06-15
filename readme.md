@@ -131,3 +131,108 @@ Error Set:
 ![](results/1.3/results.png)
 
 This looks like the faster way.
+
+### 2. Test in laptop on cmd
+
+* OS: Windows 10 Versión 10.0.18363 build 18363
+* Processor: Intel(R) Core(TM) i5-3337U CPU @ 1.80GHz, 1801 Mhz
+* RAM: 16 GB DDR3 1600 MHZ
+* SSD: 550MB/s read and write
+
+#### 2.1 Default router
+
+Open a cmd terminal, and run it.
+
+```sh
+go run .
+```
+
+Atack it in other terminal
+
+```sh
+vegeta attack -duration=100s -targets=targets.http | tee results.bin | vegeta report
+```
+
+The results.
+
+```sh
+Requests      [total, rate, throughput]         5000, 50.01, 25.00
+Duration      [total, attack, wait]             1m40s, 1m40s, 10.985ms
+Latencies     [min, mean, 50, 90, 95, 99, max]  992µs, 5.103ms, 3.516ms, 10.987ms, 10.994ms, 12.128ms, 42.974ms
+Bytes In      [total, mean]                     30000, 6.00
+Bytes Out     [total, mean]                     0, 0.00
+Success       [ratio]                           50.00%
+Status Codes  [code:count]                      200:2500  500:2500
+Error Set:
+500 Internal Server Error
+```
+
+![](results/2.1/results.png)
+
+Compared with vs code terminal, using cmd is faster.
+
+#### 2.2 Default router with no logs
+
+Run it.
+
+```sh
+SET GINROUTER=nolog
+go run .
+```
+
+Atack it in other terminal
+
+```sh
+vegeta attack -duration=100s -targets=targets.http | tee results.bin | vegeta report
+```
+
+The results.
+
+```sh
+Requests      [total, rate, throughput]         5000, 50.01, 25.00
+Duration      [total, attack, wait]             1m40s, 1m40s, 1.995ms
+Latencies     [min, mean, 50, 90, 95, 99, max]  1.995ms, 1.092ms, 1.158ms, 2ms, 2.993ms, 2.998ms, 16.991ms
+Bytes In      [total, mean]                     30000, 6.00
+Bytes Out     [total, mean]                     0, 0.00
+Success       [ratio]                           50.00%
+Status Codes  [code:count]                      200:2500  500:2500
+Error Set:
+500 Internal Server Error
+```
+
+![](results/2.2/results.png)
+
+This is some faster that default router
+
+#### 2.3 go-api recover middleware
+
+Run it.
+
+```sh
+SET GINROUTER=go-api
+go run .
+```
+
+Atack it in other terminal
+
+```sh
+vegeta attack -duration=100s -targets=targets.http | tee results.bin | vegeta report
+```
+
+The results.
+
+```sh
+Requests      [total, rate, throughput]         5000, 50.01, 25.00
+Duration      [total, attack, wait]             1m40s, 1m40s, 0s
+Latencies     [min, mean, 50, 90, 95, 99, max]  0s, 14.038µs, 0s, 0s, 0s, 97.465µs, 17.99ms
+Bytes In      [total, mean]                     122500, 24.50
+Bytes Out     [total, mean]                     0, 0.00
+Success       [ratio]                           50.00%
+Status Codes  [code:count]                      200:2500  500:2500
+Error Set:
+500 Internal Server Error
+```
+
+![](results/2.3/results.png)
+
+Again, is the faster way.
